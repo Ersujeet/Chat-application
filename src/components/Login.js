@@ -23,7 +23,7 @@ const Login = () => {
 
 
     try {
-      const res = await axios.post('/api/auth/login', user);
+      const res = await axios.post('https://backendapp-beige.vercel.app/api/auth/login', user);
 
       console.log(res.data);
       localStorage.setItem('token', res.data.token);
