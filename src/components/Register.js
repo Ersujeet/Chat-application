@@ -20,7 +20,7 @@ const Register = () => {
 
     e.preventDefault();
     try {
-      const data = await axios.post('/api/auth/register', user);
+      const data = await axios.post('https://backendapp-beige.vercel.app/api/auth/register', user);
       console.log(data);
       //   history.push('/login');
     } catch (err) {
