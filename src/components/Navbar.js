@@ -1,39 +1,111 @@
-import React, { useEffect } from 'react'
-import './../CSS files/Navbar.css'
-import { CiLogin } from "react-icons/ci";
-import { FaUserPlus } from "react-icons/fa";
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
-const Navbar = () => {
-  const isLogedIn = localStorage.getItem('isLogin');
+import React from 'react';
+import { NavLink, Link, useNavigate } from 'react-router-dom';
+import {
+  FiLogIn,
+  FiUserPlus,
+  FiLogOut,
+  FiMessageSquare,
+  FiSun,
+  FiMoon,
+} from 'react-icons/fi';
+import './../CSS files/Navbar.css';
+
+const Navbar = ({ isLoggedIn, onLogout, theme, onToggleTheme }) => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // isLogedIn && console.log(isLogedIn);
-  })
-  return (
-    <div className='navbarcontainer'>
-      <div className='navbar'>
-        <div className='logo'>Real Chat App</div>
-        <ul className='navlinks'>
-          {!isLogedIn &&
-            <>
-            <Link to="/login"><li className='navlist'><CiLogin /> SignIn</li></Link>
-            <Link to="/register"><li className='navlist'><FaUserPlus />SignUp</li></Link>
-            </>
-          }
-          {isLogedIn && <>
-          {/* <Link to="/chat"><li className='navlist'>Chat</li></Link> */}
-          <button className='logoutbtn' onClick={() => {localStorage.removeItem('isLogin'); localStorage.removeItem('token'); navigate('/login');}} ><li className='navlist'>Logout</li></button>
-          </>
-          }
-        {/* <Link to="/login"><li className='navlist'><CiLogin />Sign In</li></Link>
-        <Link to="/register"><li className='navlist'><FaUserPlus />Sign Up</li></Link>
-        <Link to="/chat"><li className='navlist'>Join Chat</li></Link> */}
-        </ul>
-      </div>
-    </div>
-  )
-}
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    } else {
+      localStorage.removeItem('isLogin');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userid');
+      localStorage.removeItem('selectedgroup');
+    }
+    navigate('/login');
+  };
 
-export default Navbar
+  return (
+    <header className="navbar-header">
+      <nav className="navbar-inner" aria-label="Main navigation">
+        <Link to={isLoggedIn ? '/chat' : '/login'} className="navbar-brand">
+          <span className="navbar-brand-icon" aria-hidden="true">
+            <FiMessageSquare />
+          </span>
+          <span className="navbar-brand-text">PulseChat</span>
+        </Link>
+
+        <div className="navbar-actions">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={onToggleTheme}
+            aria-label={
+              theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+            }
+            title={
+              theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+            }
+          >
+            {theme === 'dark' ? <FiSun /> : <FiMoon />}
+          </button>
+
+          <ul className="nav-links-list">
+            {!isLoggedIn ? (
+              <>
+                <li>
+                  <NavLink
+                    to="/login"
+                    className={({ isActive }) =>
+                      `nav-link-item ${isActive ? 'active' : ''}`
+                    }
+                  >
+                    <FiLogIn aria-hidden="true" />
+                    <span>Sign In</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/register"
+                    className={({ isActive }) =>
+                      `nav-link-item nav-link-primary ${isActive ? 'active' : ''}`
+                    }
+                  >
+                    <FiUserPlus aria-hidden="true" />
+                    <span>Sign Up</span>
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <NavLink
+                    to="/chat"
+                    className={({ isActive }) =>
+                      `nav-link-item ${isActive ? 'active' : ''}`
+                    }
+                  >
+                    <FiMessageSquare aria-hidden="true" />
+                    <span className="nav-label-hide-xs">Chats</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    className="nav-logout-btn"
+                    onClick={handleLogout}
+                  >
+                    <FiLogOut aria-hidden="true" />
+                    <span>Logout</span>
+                  </button>
+                </li>
+              </>
+            )}
+          </ul>
+        </div>
+      </nav>
+    </header>
+  );
+};
+
+export default Navbar;
